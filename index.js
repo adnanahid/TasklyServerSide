@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
@@ -21,16 +21,22 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
-    // await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    const TaskLy_DB = client.db("TaskLy_DB");
+    const usersCollection = TaskLy_DB.collection("usersCollections");
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
 
     app.post("/userDetails", async (req, res) => {
       const details = req.body;
+      const isExist = await usersCollection.findOne({ email: details.email });
+      if (!isExist) {
+        const result = await usersCollection.insertOne(details);
+        return res.send(result);
+      } else {
+        return res.send("already exist");
+      }
     });
   } finally {
     // Ensures that the client will close when you finish/error
@@ -38,10 +44,6 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port http://localhost:${PORT}`);
