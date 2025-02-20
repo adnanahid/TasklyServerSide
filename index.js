@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
@@ -52,6 +52,12 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/tasks/:_id", async (req, res) => {
+      const result = await taskCollection.deleteOne({
+        _id: new ObjectId(req.params._id),
+      });
+      res.send("Task deleted successfully");
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
