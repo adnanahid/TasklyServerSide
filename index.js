@@ -23,12 +23,13 @@ async function run() {
   try {
     const TaskLy_DB = client.db("TaskLy_DB");
     const usersCollection = TaskLy_DB.collection("usersCollections");
+    const taskCollection = TaskLy_DB.collection("taskCollection");
 
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
 
-    app.post("/userDetails", async (req, res) => {
+    app.post("/userdetails", async (req, res) => {
       const details = req.body;
       const isExist = await usersCollection.findOne({ email: details.email });
       if (!isExist) {
@@ -38,6 +39,19 @@ async function run() {
         return res.send("already exist");
       }
     });
+
+    app.post("/tasks", async (req, res) => {
+      const task = req.body;
+      const result = await taskCollection.insertOne(task);
+      return res.send(result);
+    });
+
+    app.get("/tasks/:email", async (req, res) => {
+      const query = { email: req.params.email };
+      const result = await taskCollection.find(query).toArray();
+      res.send(result);
+    });
+
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
