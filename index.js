@@ -58,6 +58,14 @@ async function run() {
       });
       res.send("Task deleted successfully");
     });
+
+    app.put("/tasks/:id", async (req, res) => {
+      const result = await taskCollection.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: req.body }
+      );
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
