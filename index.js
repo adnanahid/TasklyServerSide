@@ -1,26 +1,13 @@
 const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
-
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-// Create HTTP server
-const server = http.createServer(app);
-
-// WebSocket server
-const io = new Server(server, {
-  cors: {
-    origin: ["http://localhost:5173", "https://taskly-bbccc.web.app"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
-});
+// Middleware to parse JSON data
+app.use(express.json());
 
 // Middleware
-app.use(express.json());
 app.use(
   cors({
     origin: ["http://localhost:5173", "https://taskly-bbccc.web.app"],
@@ -55,9 +42,9 @@ async function run() {
 
     if (!isExist) {
       const result = await usersCollection.insertOne(details);
-      return res.send(result);
+      return res.status(200).send(result);
     }
-    return res.send("already exist");
+    return res.status(409).send({ message: "User already exists" });
   });
 
   // ** Add New Task **
