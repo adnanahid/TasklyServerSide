@@ -4,6 +4,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 5000;
+
 // Middleware to parse JSON data
 app.use(express.json());
 
@@ -42,9 +43,9 @@ async function run() {
 
     if (!isExist) {
       const result = await usersCollection.insertOne(details);
-      return res.status(200).send(result);
+      return res.send(result);
     }
-    return res.status(409).send({ message: "User already exists" });
+    return res.send({ message: "User already exists" });
   });
 
   // ** Add New Task **
