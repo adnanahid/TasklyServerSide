@@ -11,7 +11,7 @@ app.use(express.json());
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://taskly-server-eta.vercel.app"],
+    origin: ["http://localhost:5173", "https://taskly-bbccc.web.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -29,9 +29,6 @@ const client = new MongoClient(uri, {
 });
 
 async function run() {
-  await client.connect();
-  console.log("Connected to MongoDB!");
-
   const TaskLy_DB = client.db("TaskLy_DB");
   const usersCollection = TaskLy_DB.collection("usersCollections");
   const taskCollection = TaskLy_DB.collection("taskCollection");
@@ -82,6 +79,10 @@ async function run() {
 }
 
 run().catch(console.dir);
+
+app.get("/", (req, res) => {
+  res.send("taskly server is ok");
+});
 
 // Start Server
 app.listen(PORT, () => {
