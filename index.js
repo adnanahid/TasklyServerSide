@@ -11,7 +11,7 @@ app.use(express.json());
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://taskly-bbccc.web.app"],
+    origin: ["http://localhost:5173", "https://taskly-server-eta.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -57,7 +57,8 @@ async function run() {
 
   // ** Get Tasks by Email **
   app.get("/tasks/:email", async (req, res) => {
-    const query = { email: req.params.email };
+    const { email } = req.params;
+    const query = { email: email };
     const result = await taskCollection.find(query).toArray();
     res.send(result);
   });
